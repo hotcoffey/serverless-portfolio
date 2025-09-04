@@ -44,7 +44,8 @@ jobs:
         id: terraform_outputs
         run: |
           cd terraform
-          echo "BUCKET_NAME=$(terraform output -raw bucket_name)" >> $GITHUB_ENV
+          BUCKET_NAME=$(terraform output -raw bucket_name 2>/dev/null) || { echo "Failed to get bucket_name output"; exit 1; }
+          echo "BUCKET_NAME=$BUCKET_NAME" >> $GITHUB_ENV
       - name: Sync website files to S3
         run: aws s3 sync site/ s3://${BUCKET_NAME}/
         env:
