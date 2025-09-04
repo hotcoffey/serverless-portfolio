@@ -20,6 +20,5 @@
 2. **Install Python 3.13**: Use `pyenv install 3.13.0` and set `pyenv local 3.13.0`.
 3. **Install Dependencies**: Run `poetry install` in the `src/` directory.
 4. **Generate Content**: Run `poetry run python src/generate_site.py` to create `site/index.html`.
-5. **Deploy Manually**: Use `aws s3 sync site/ s3://hotcoffey-portfolio-0xeqo7mq/` to upload files.
 6. **CI/CD**: Push changes to the `main` branch to trigger the GitHub Actions workflow.
 7. **Access**: Visit the website at the URL output by `terraform output website_url`.
