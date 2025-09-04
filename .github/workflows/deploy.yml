@@ -18,7 +18,7 @@ jobs:
       - name: Install dependencies
         run: |
           cd src
-          poetry install
+          poetry install --no-root
       - name: Generate website content
         run: |
           cd src
@@ -40,8 +40,13 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: us-east-1
+      - name: Get Terraform Outputs
+        id: terraform_outputs
+        run: |
+          cd terraform
+          echo "BUCKET_NAME=$(terraform output -raw bucket_name)" >> $GITHUB_ENV
       - name: Sync website files to S3
-        run: aws s3 sync site/ s3://hotcoffey-portfolio-0xeqo7mq/
+        run: aws s3 sync site/ s3://${BUCKET_NAME}/
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
