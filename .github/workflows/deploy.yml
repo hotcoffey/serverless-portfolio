@@ -27,6 +27,7 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.5.0
+          terraform_wrapper: false  # Disable wrapper to avoid debug output
       - name: Terraform Init
         run: terraform init
         working-directory: terraform
@@ -44,7 +45,7 @@ jobs:
         id: terraform_outputs
         run: |
           cd terraform
-          BUCKET_NAME=$(terraform output -raw bucket_name 2>/dev/null) || { echo "Failed to get bucket_name output"; exit 1; }
+          BUCKET_NAME=$(TF_LOG=OFF terraform output -raw bucket_name | grep -o 'hotcoffey-portfolio-[a-z0-9]*') || { echo "Failed to get bucket_name output"; exit 1; }
           echo "BUCKET_NAME=$BUCKET_NAME" >> $GITHUB_ENV
       - name: Sync website files to S3
         run: aws s3 sync site/ s3://${BUCKET_NAME}/
